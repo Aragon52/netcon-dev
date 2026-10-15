@@ -1,0 +1,6 @@
+{
+  "name": "Netcon Precision VPN",
+  "description": "Native Android VPN and proxy instrument with V2Ray/Xray configuration engine, custom DNS routing, and Gemini AI assistant.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
