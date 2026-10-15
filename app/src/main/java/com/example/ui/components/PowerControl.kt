@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Power
+import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -40,16 +41,12 @@ import com.example.model.VpnStatus
 import com.example.ui.theme.CopperAccent
 import com.example.ui.theme.CopperGlow
 import com.example.ui.theme.CopperHighlight
-import com.example.ui.theme.EngraveInk
 import com.example.ui.theme.LedGreen
 import com.example.ui.theme.LedRed
 import com.example.ui.theme.LedYellow
 import com.example.ui.theme.SteelBase
 import com.example.ui.theme.SteelBorder
 import com.example.ui.theme.SteelDeepInk
-import com.example.ui.theme.SteelPlateLight
-import com.example.ui.theme.SteelPlateMid
-import com.example.ui.theme.SteelPlateShade
 import com.example.ui.theme.SteelTrayBevel
 import com.example.ui.theme.TextSecondary
 
@@ -102,37 +99,35 @@ fun PowerControl(
                 modifier = Modifier
                     .size(125.dp)
                     .scale(if (status == VpnStatus.CONNECTING || status == VpnStatus.CONNECTED) pulseScale else 1f)
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(CircleShape)
                     .background(auraColor)
             )
 
-            // Raised steel switch housing
+            // Steel Outer Housing Ring
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(width = 112.dp, height = 116.dp)
-                    .clip(RoundedCornerShape(7.dp))
+                    .size(105.dp)
+                    .clip(CircleShape)
                     .background(
-                        Brush.verticalGradient(
-                            colors = listOf(SteelTrayBevel, SteelBase, SteelDeepInk)
+                        Brush.radialGradient(
+                            colors = listOf(SteelBase, SteelDeepInk)
                         )
                     )
-                    .border(3.dp, SteelTrayBevel, RoundedCornerShape(7.dp))
+                    .border(3.dp, SteelTrayBevel, CircleShape)
             ) {
-                val switchPlate = if (status == VpnStatus.CONNECTED || status == VpnStatus.CONNECTING) {
-                    listOf(SteelPlateShade, SteelPlateMid, SteelPlateLight)
-                } else {
-                    listOf(SteelPlateLight, SteelPlateMid, SteelPlateShade)
-                }
+                // Tactile Power Button
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(width = 78.dp, height = 86.dp)
-                        .clip(RoundedCornerShape(4.dp))
+                        .size(80.dp)
+                        .clip(CircleShape)
                         .background(
-                            Brush.verticalGradient(colors = switchPlate)
+                            Brush.linearGradient(
+                                colors = listOf(SteelBase, SteelDeepInk)
+                            )
                         )
-                        .border(2.dp, SteelDeepInk, RoundedCornerShape(4.dp))
+                        .border(2.dp, buttonColor, CircleShape)
                         .testTag("power_button")
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
@@ -140,27 +135,11 @@ fun PowerControl(
                             onClick = onClick
                         )
                 ) {
-                    Text(
-                        text = "I",
-                        fontSize = 9.sp,
-                        fontFamily = FontFamily.Monospace,
-                        fontWeight = FontWeight.Bold,
-                        color = EngraveInk,
-                        modifier = Modifier.align(Alignment.TopCenter).padding(top = 5.dp)
-                    )
                     Icon(
-                        imageVector = Icons.Default.Power,
+                        imageVector = Icons.Default.Bolt,
                         contentDescription = "Toggle VPN",
                         tint = buttonColor,
-                        modifier = Modifier.size(34.dp)
-                    )
-                    Text(
-                        text = "O",
-                        fontSize = 9.sp,
-                        fontFamily = FontFamily.Monospace,
-                        fontWeight = FontWeight.Bold,
-                        color = EngraveInk,
-                        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 5.dp)
+                        modifier = Modifier.size(38.dp)
                     )
                 }
             }

@@ -6,7 +6,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -57,40 +56,38 @@ fun Gauge(
         label = "GaugeNeedle"
     )
 
-    BoxWithConstraints(
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .clip(RoundedCornerShape(6.dp))
+            .clip(RoundedCornerShape(12.dp))
             .background(SteelTraySurface)
-            .border(1.dp, SteelBorder, RoundedCornerShape(6.dp))
-            .padding(horizontal = 4.dp, vertical = 8.dp)
+            .border(1.dp, SteelBorder, RoundedCornerShape(12.dp))
+            .padding(12.dp)
     ) {
-        val dialSize = (maxWidth - 8.dp).coerceAtMost(110.dp).coerceAtLeast(62.dp)
+        Text(
+            text = label,
+            fontSize = 10.sp,
+            fontFamily = FontFamily.Monospace,
+            fontWeight = FontWeight.Bold,
+            color = TextSecondary,
+            letterSpacing = 0.5.sp
+        )
 
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = label,
-                fontSize = 8.sp,
-                fontFamily = FontFamily.Monospace,
-                fontWeight = FontWeight.Bold,
-                color = TextSecondary,
-                letterSpacing = 0.2.sp
-            )
+        Spacer(modifier = Modifier.height(6.dp))
 
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(dialSize)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.radialGradient(
-                            colors = listOf(SteelDeepInk, SteelBase)
-                        )
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(110.dp)
+                .clip(CircleShape)
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(SteelDeepInk, SteelBase)
                     )
-                    .border(2.dp, SteelTrayBevel, CircleShape)
-            ) {
-                Canvas(modifier = Modifier.size(dialSize - 14.dp)) {
+                )
+                .border(2.dp, SteelTrayBevel, CircleShape)
+        ) {
+            Canvas(modifier = Modifier.size(90.dp)) {
                 val center = Offset(size.width / 2f, size.height / 2f)
                 val radius = size.width / 2f - 4.dp.toPx()
 
@@ -165,24 +162,23 @@ fun Gauge(
             }
 
             // Numeric value overlay at bottom
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)
-                ) {
-                    Text(
-                        text = if (active) value.toInt().toString() else "--",
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily.Monospace,
-                        fontWeight = FontWeight.Bold,
-                        color = if (active) CopperHighlight else TextSecondary
-                    )
-                    Text(
-                        text = unit,
-                        fontSize = 8.sp,
-                        fontFamily = FontFamily.Monospace,
-                        color = TextSecondary
-                    )
-                }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 12.dp)
+            ) {
+                Text(
+                    text = if (active) value.toInt().toString() else "--",
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.Bold,
+                    color = if (active) CopperHighlight else TextSecondary
+                )
+                Text(
+                    text = unit,
+                    fontSize = 9.sp,
+                    fontFamily = FontFamily.Monospace,
+                    color = TextSecondary
+                )
             }
         }
     }

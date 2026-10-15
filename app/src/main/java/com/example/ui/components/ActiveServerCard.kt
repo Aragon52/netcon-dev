@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Radio
@@ -31,13 +30,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.model.ServerNode
 import com.example.ui.theme.CopperAccent
-import com.example.ui.theme.CopperBevel
+import com.example.ui.theme.CopperGlow
 import com.example.ui.theme.CopperHighlight
-import com.example.ui.theme.EngraveInk
 import com.example.ui.theme.SteelBorder
 import com.example.ui.theme.SteelDeepInk
-import com.example.ui.theme.SteelPlateMid
-import com.example.ui.theme.SteelPlateShade
+import com.example.ui.theme.SteelTraySurface
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
 
 @Composable
 fun ActiveServerCard(
@@ -64,7 +63,7 @@ fun ActiveServerCard(
                     fontSize = 11.sp,
                     fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight.Bold,
-                    color = CopperBevel,
+                    color = CopperHighlight,
                     letterSpacing = 0.5.sp
                 )
             }
@@ -81,12 +80,12 @@ fun ActiveServerCard(
                     fontSize = 11.sp,
                     fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight.Bold,
-                    color = CopperBevel
+                    color = CopperGlow
                 )
                 Icon(
                     imageVector = Icons.Default.ChevronRight,
                     contentDescription = null,
-                    tint = CopperBevel,
+                    tint = CopperGlow,
                     modifier = Modifier.size(14.dp)
                 )
             }
@@ -95,9 +94,9 @@ fun ActiveServerCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(5.dp))
-                .background(Brush.verticalGradient(listOf(SteelPlateMid, SteelPlateShade)))
-                .border(1.dp, SteelBorder, RoundedCornerShape(5.dp))
+                .clip(RoundedCornerShape(12.dp))
+                .background(SteelTraySurface)
+                .border(1.dp, SteelBorder, RoundedCornerShape(12.dp))
                 .testTag("active_server_card")
                 .clickable { onOpenManager() }
                 .padding(14.dp)
@@ -124,14 +123,14 @@ fun ActiveServerCard(
                             fontSize = 14.sp,
                             fontFamily = FontFamily.Monospace,
                             fontWeight = FontWeight.Bold,
-                            color = EngraveInk,
+                            color = TextPrimary,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
                             text = if (node != null) "${node.country} · ${if (node.isUntrusted) "UNTRUSTED PUBLIC" else "Imported Node"}" else "Tap to choose a node",
                             fontSize = 11.sp,
-                            color = EngraveInk.copy(alpha = 0.78f)
+                            color = TextSecondary
                         )
                     }
                 }
@@ -161,7 +160,7 @@ fun ActiveServerCard(
                             text = if (node.pingMs > 0) "${node.pingMs}ms" else "42ms",
                             fontSize = 12.sp,
                             fontFamily = FontFamily.Monospace,
-                            color = CopperBevel,
+                            color = CopperGlow,
                             fontWeight = FontWeight.Bold
                         )
 
