@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
@@ -53,12 +54,14 @@ import com.example.ui.theme.CopperAccent
 import com.example.ui.theme.CopperBevel
 import com.example.ui.theme.CopperGlow
 import com.example.ui.theme.CopperHighlight
+import com.example.ui.theme.EngraveInk
 import com.example.ui.theme.LedRed
-import com.example.ui.theme.SteelBase
 import com.example.ui.theme.SteelBorder
 import com.example.ui.theme.SteelDeepInk
 import com.example.ui.theme.SteelTrayBevel
-import com.example.ui.theme.SteelTraySurface
+import com.example.ui.theme.SteelPlateLight
+import com.example.ui.theme.SteelPlateMid
+import com.example.ui.theme.SteelPlateShade
 import com.example.ui.theme.TextPrimary
 import com.example.ui.theme.TextSecondary
 
@@ -89,9 +92,9 @@ fun AiTrayPanel(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(SteelTraySurface)
-            .border(1.dp, SteelBorder, RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(6.dp))
+            .background(Brush.verticalGradient(listOf(SteelPlateMid, SteelPlateShade)))
+            .border(1.dp, SteelBorder, RoundedCornerShape(6.dp))
             .padding(14.dp)
     ) {
         // AI Tray Header
@@ -128,7 +131,7 @@ fun AiTrayPanel(
                 text = "A SMARTER WAY TO CONNECT",
                 fontSize = 9.sp,
                 fontFamily = FontFamily.Monospace,
-                color = TextSecondary,
+                color = EngraveInk,
                 letterSpacing = 0.5.sp
             )
         }
@@ -140,7 +143,7 @@ fun AiTrayPanel(
             fontSize = 10.sp,
             fontFamily = FontFamily.Monospace,
             fontWeight = FontWeight.Bold,
-            color = TextSecondary,
+                color = EngraveInk,
             letterSpacing = 0.5.sp
         )
 
@@ -192,9 +195,15 @@ fun AiTrayPanel(
                 val isSelected = purpose == action
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(if (isSelected) CopperAccent else SteelBase)
-                        .border(1.dp, if (isSelected) CopperHighlight else SteelBorder, RoundedCornerShape(6.dp))
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(
+                            if (isSelected) {
+                                Brush.verticalGradient(listOf(SteelPlateShade, SteelPlateMid))
+                            } else {
+                                Brush.verticalGradient(listOf(SteelPlateLight, SteelPlateMid, SteelPlateShade))
+                            }
+                        )
+                        .border(1.dp, if (isSelected) CopperBevel else SteelPlateShade, RoundedCornerShape(4.dp))
                         .clickable { onPurposeChange(action) }
                         .padding(horizontal = 10.dp, vertical = 5.dp)
                 ) {
@@ -202,7 +211,7 @@ fun AiTrayPanel(
                         text = action,
                         fontSize = 11.sp,
                         fontFamily = FontFamily.Monospace,
-                        color = if (isSelected) SteelDeepInk else TextPrimary,
+                        color = if (isSelected) CopperBevel else EngraveInk,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                     )
                 }

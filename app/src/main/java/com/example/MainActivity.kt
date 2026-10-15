@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -41,8 +42,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontFamily
@@ -63,8 +67,10 @@ import com.example.ui.components.ServerManagerDrawer
 import com.example.ui.components.SettingsPanel
 import com.example.ui.components.WelcomeDialog
 import com.example.ui.theme.CopperAccent
+import com.example.ui.theme.CopperBevel
 import com.example.ui.theme.CopperGlow
 import com.example.ui.theme.CopperHighlight
+import com.example.ui.theme.EngraveInk
 import com.example.ui.theme.LedGreen
 import com.example.ui.theme.LedRed
 import com.example.ui.theme.LedYellow
@@ -73,6 +79,9 @@ import com.example.ui.theme.SteelBase
 import com.example.ui.theme.SteelBorder
 import com.example.ui.theme.SteelDark
 import com.example.ui.theme.SteelDeepInk
+import com.example.ui.theme.SteelPlateLight
+import com.example.ui.theme.SteelPlateMid
+import com.example.ui.theme.SteelPlateShade
 import com.example.ui.theme.SteelTrayBevel
 import com.example.ui.theme.SteelTraySurface
 import com.example.ui.theme.TextPrimary
@@ -109,6 +118,12 @@ class MainActivity : ComponentActivity() {
                                 )
                             )
                     ) {
+                        Image(
+                            painter = painterResource(R.drawable.brushed_steel),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize().alpha(0.16f)
+                        )
                         NetconAppScreen(
                             viewModel = viewModel,
                             onRequestVpnPermission = {
@@ -156,16 +171,29 @@ fun NetconAppScreen(
             .fillMaxSize()
             .padding(12.dp)
     ) {
-        // Chassis Frame Outer Border
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .clip(RoundedCornerShape(16.dp))
-                .background(SteelBase)
-                .border(2.dp, SteelTrayBevel, RoundedCornerShape(16.dp))
-                .padding(12.dp)
-        ) {
+        // Brushed-metal chassis frame
+        Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
+            Image(
+                painter = painterResource(R.drawable.brushed_steel),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp))
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(5.dp))
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                SteelBase.copy(alpha = 0.90f),
+                                SteelDeepInk.copy(alpha = 0.94f)
+                            )
+                        )
+                    )
+                    .border(2.dp, SteelTrayBevel, RoundedCornerShape(8.dp))
+                    .padding(12.dp)
+            ) {
             // Header
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -173,13 +201,11 @@ fun NetconAppScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column {
-                    Text(
-                        text = "NETCON",
-                        fontSize = 24.sp,
-                        fontFamily = FontFamily.Monospace,
-                        fontWeight = FontWeight.Bold,
-                        color = CopperHighlight,
-                        letterSpacing = 2.sp
+                    Image(
+                        painter = painterResource(R.drawable.netcon_logo),
+                        contentDescription = "Netcon",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier.width(126.dp).height(32.dp)
                     )
                     Text(
                         text = "PRECISION CONNECTION SYSTEM",
@@ -349,8 +375,13 @@ fun NetconAppScreen(
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(SteelDeepInk)
+                                            .clip(RoundedCornerShape(4.dp))
+                                            .background(
+                                                Brush.verticalGradient(
+                                                    colors = listOf(SteelPlateLight, SteelPlateMid, SteelPlateShade)
+                                                )
+                                            )
+                                            .border(1.dp, SteelTrayBevel, RoundedCornerShape(4.dp))
                                             .padding(horizontal = 8.dp, vertical = 6.dp),
                                         horizontalArrangement = Arrangement.SpaceAround,
                                         verticalAlignment = Alignment.CenterVertically
@@ -370,9 +401,52 @@ fun NetconAppScreen(
                                             OdometerView(valueMb = telemetry.received)
                                         }
                                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                            Text("SENT", fontSize = 8.sp, fontFamily = FontFamily.Monospace, color = TextSecondary)
+                                            Text("SENT", fontSize = 8.sp, fontFamily = FontFamily.Monospace, color = EngraveInk)
                                             OdometerView(valueMb = telemetry.sent)
                                         }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(6.dp))
+
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                        modifier = Modifier.fillMaxWidth().padding(horizontal = 3.dp)
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(7.dp)
+                                                .clip(CircleShape)
+                                                .background(
+                                                    when (status) {
+                                                        VpnStatus.CONNECTED -> LedGreen
+                                                        VpnStatus.CONNECTING -> LedYellow
+                                                        VpnStatus.OFFLINE -> LedRed
+                                                    }
+                                                )
+                                        )
+                                        Text(
+                                            text = when (status) {
+                                                VpnStatus.CONNECTED -> "Native VPN tunnel connected"
+                                                VpnStatus.CONNECTING -> "Starting Android VPN service..."
+                                                VpnStatus.OFFLINE -> "Your VPN tunnel is disconnected"
+                                            },
+                                            fontSize = 9.sp,
+                                            fontFamily = FontFamily.Monospace,
+                                            color = TextSecondary,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                        Text(
+                                            text = "ANDROID VPN",
+                                            fontSize = 8.sp,
+                                            fontFamily = FontFamily.Monospace,
+                                            fontWeight = FontWeight.Bold,
+                                            color = EngraveInk,
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(3.dp))
+                                                .background(SteelPlateMid)
+                                                .padding(horizontal = 5.dp, vertical = 3.dp)
+                                        )
                                     }
                                 }
 
@@ -439,6 +513,8 @@ fun NetconAppScreen(
             }
         }
 
+        }
+
         Spacer(modifier = Modifier.height(4.dp))
 
         // Subtitle Below Chassis
@@ -494,11 +570,17 @@ private fun NavTabButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (selected) CopperAccent else SteelDeepInk,
-            contentColor = if (selected) SteelDeepInk else TextSecondary
+            containerColor = if (selected) SteelPlateMid else SteelTraySurface,
+            contentColor = if (selected) EngraveInk else TextPrimary
         ),
-        shape = RoundedCornerShape(20.dp),
-        modifier = modifier.padding(horizontal = 2.dp)
+        shape = RoundedCornerShape(4.dp),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = if (selected) 0.dp else 2.dp,
+            pressedElevation = 0.dp
+        ),
+        modifier = modifier
+            .padding(horizontal = 2.dp)
+            .border(2.dp, SteelDeepInk, RoundedCornerShape(4.dp))
     ) {
         Icon(
             imageVector = icon,
@@ -523,10 +605,10 @@ private fun TelemetryItem(
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(imageVector = icon, contentDescription = null, tint = CopperGlow, modifier = Modifier.size(10.dp))
+            Icon(imageVector = icon, contentDescription = null, tint = CopperBevel, modifier = Modifier.size(10.dp))
             Spacer(modifier = Modifier.width(2.dp))
-            Text(label, fontSize = 8.sp, fontFamily = FontFamily.Monospace, color = TextSecondary)
+            Text(label, fontSize = 8.sp, fontFamily = FontFamily.Monospace, color = EngraveInk)
         }
-        Text(value, fontSize = 11.sp, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold, color = CopperGlow)
+        Text(value, fontSize = 11.sp, fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold, color = CopperBevel)
     }
 }
